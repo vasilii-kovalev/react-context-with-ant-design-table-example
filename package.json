@@ -1,6 +1,7 @@
 {
   "name": "react-context-with-ant-design-table-example",
   "version": "0.1.0",
+  "homepage": "https://vasilii-kovalev.github.io/react-context-with-ant-design-table-example",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -11,7 +12,9 @@
     "test": "react-scripts test",
     "test:coverage": "npm test -- --watchAll=false --coverage --silent",
     "check:lint": "npm run tslint && npm run prettier:check",
-    "check:all": "npm run check:lint && npm run test:coverage"
+    "check:all": "npm run check:lint && npm run test:coverage",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "antd": "^4.8.4",
@@ -32,6 +35,7 @@
     "@types/react": "^16.14.1",
     "@types/react-dom": "^16.9.10",
     "@types/react-router-dom": "^5.1.6",
+    "gh-pages": "^3.1.0",
     "prettier": "2.2.0",
     "typescript": "^4.1.2"
   },
