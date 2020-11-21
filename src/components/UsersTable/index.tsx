@@ -5,34 +5,12 @@ import { build, fake } from '@jackfranklin/test-data-bot';
 import { Table } from 'components/Table';
 import { tableCells } from 'components/TableCell';
 import { useUsersTable, toggleCheckedKey } from 'context/users-table';
-import type { ITableCellCheckbox } from 'components/TableCell/Checkbox';
 
 interface User {
   id: string;
   firstName: string;
   lastName: string;
 }
-
-const withUser = (Component: React.FC<ITableCellCheckbox>) => {
-  const AugmentedCheckbox = (user: User) => {
-    const {
-      state: { checkedKeys },
-      dispatch,
-    } = useUsersTable();
-    const userId = user.id;
-
-    return (
-      <Component
-        {...user}
-        dataIndex={userId}
-        checked={checkedKeys.includes(userId)}
-        onCheck={() => toggleCheckedKey(dispatch, userId)}
-      />
-    );
-  };
-
-  return AugmentedCheckbox;
-};
 
 const userBuilder = build<User>('User', {
   fields: {
@@ -41,6 +19,8 @@ const userBuilder = build<User>('User', {
     lastName: fake(faker => faker.name.lastName()),
   },
 });
+
+const users = new Array(5).fill(null).map(() => userBuilder());
 
 const columns: ColumnType<User>[] = [
   {
@@ -55,16 +35,33 @@ const columns: ColumnType<User>[] = [
   },
   {
     title: 'Selected',
-    render: withUser(tableCells.checkbox),
+    render: function UserCell(user: User) {
+      const {
+        state: { checkedKeys },
+        dispatch,
+      } = useUsersTable();
+      const userId = user.id;
+
+      return (
+        <tableCells.checkbox
+          {...user}
+          dataIndex={userId}
+          checked={checkedKeys.includes(userId)}
+          onCheck={() => toggleCheckedKey(dispatch, userId)}
+        />
+      );
+    },
   },
 ];
-
-const users = new Array(5).fill(null).map(() => userBuilder());
 
 const UsersTable: React.FC = () => {
   const { data } = useQuery('users', () => Promise.resolve(users));
 
-  return <Table columns={columns} dataSource={data} pagination={false} />;
+  return (
+    <Table columns={columns} dataSource={data} pagination={false} rowKey="id" />
+  );
 };
 
 export { UsersTable };
+
+export type { User };

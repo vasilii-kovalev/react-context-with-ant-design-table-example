@@ -2,7 +2,7 @@ import * as React from 'react';
 
 type CheckedKey = string;
 
-interface UsersTableState {
+interface ColorsTableState {
   checkedKeys: CheckedKey[];
 }
 
@@ -15,22 +15,22 @@ interface ToggleCheckedKey {
   checkedKey: CheckedKey;
 }
 
-type UsersTableAction = ToggleCheckedKey;
+type ColorsTableAction = ToggleCheckedKey;
 
-type UsersTablesDispatch = React.Dispatch<UsersTableAction>;
+type ColorsTablesDispatch = React.Dispatch<ColorsTableAction>;
 
-type UsersTableReducer = React.Reducer<UsersTableState, UsersTableAction>;
+type ColorsTableReducer = React.Reducer<ColorsTableState, ColorsTableAction>;
 
-interface UsersTableProviderProps {
-  initialValue?: UsersTableState;
-  reducer?: UsersTableReducer;
+interface ColorsTableProviderProps {
+  initialValue?: ColorsTableState;
+  reducer?: ColorsTableReducer;
 }
 
-const defaultInitialValue: UsersTableState = {
+const defaultInitialValue: ColorsTableState = {
   checkedKeys: [],
 };
 
-const defaultReducer: UsersTableReducer = (state, action) => {
+const defaultReducer: ColorsTableReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.toggleCheckedKey: {
       const { checkedKey } = action;
@@ -55,20 +55,20 @@ const defaultReducer: UsersTableReducer = (state, action) => {
   }
 };
 
-const UsersTableContext = React.createContext<{
-  state: UsersTableState;
-  dispatch: React.Dispatch<UsersTableAction>;
+const ColorsTableContext = React.createContext<{
+  state: ColorsTableState;
+  dispatch: React.Dispatch<ColorsTableAction>;
 }>({
   state: defaultInitialValue,
   dispatch: () => {},
 });
 
-const UsersTableProvider: React.FC<UsersTableProviderProps> = ({
+const ColorsTableProvider: React.FC<ColorsTableProviderProps> = ({
   initialValue = defaultInitialValue,
   reducer = defaultReducer,
   children,
 }) => {
-  const [state, dispatch] = React.useReducer<UsersTableReducer>(
+  const [state, dispatch] = React.useReducer<ColorsTableReducer>(
     reducer,
     initialValue
   );
@@ -82,25 +82,25 @@ const UsersTableProvider: React.FC<UsersTableProviderProps> = ({
   );
 
   return (
-    <UsersTableContext.Provider value={value}>
+    <ColorsTableContext.Provider value={value}>
       {children}
-    </UsersTableContext.Provider>
+    </ColorsTableContext.Provider>
   );
 };
 
-const useUsersTable = () => {
-  const usersTable = React.useContext(UsersTableContext);
+const useColorsTable = () => {
+  const colorsTable = React.useContext(ColorsTableContext);
 
-  if (usersTable === undefined) {
-    throw new Error(`useUsersTable must be used within a UsersTableProvider`);
+  if (colorsTable === undefined) {
+    throw new Error(`useColorsTable must be used within a ColorsTableProvider`);
   }
 
-  return usersTable;
+  return colorsTable;
 };
 
 const toggleCheckedKey = (
-  dispatch: UsersTablesDispatch,
+  dispatch: ColorsTablesDispatch,
   checkedKey: CheckedKey
 ) => dispatch({ type: actionTypes.toggleCheckedKey, checkedKey });
 
-export { UsersTableProvider, useUsersTable, toggleCheckedKey };
+export { ColorsTableProvider, useColorsTable, toggleCheckedKey };

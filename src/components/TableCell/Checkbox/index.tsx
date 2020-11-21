@@ -1,23 +1,18 @@
 import Checkbox, { CheckboxChangeEvent } from 'antd/es/checkbox';
 import * as React from 'react';
 
-interface ITableCellCheckbox {
+interface TableCellCheckboxProps {
   dataIndex: string | number;
   checked?: boolean;
   onCheck?: (event: CheckboxChangeEvent) => void;
 }
 
-const TableCellCheckbox: React.FC<ITableCellCheckbox> = ({
+const TableCellCheckbox: React.FC<TableCellCheckboxProps> = ({
   dataIndex,
   checked,
   onCheck,
-}) => {
-  console.log(checked);
-  console.log(onCheck);
-
-  return <Checkbox key={dataIndex} checked={checked} onChange={onCheck} />;
-};
+}) => <Checkbox key={dataIndex} checked={checked} onChange={onCheck} />;
 
 export { TableCellCheckbox };
 
-export type { ITableCellCheckbox };
+export type { TableCellCheckboxProps };
