@@ -1,4 +1,8 @@
-import { Layout, Row, Col, Button, notification } from 'antd';
+import Button from 'antd/es/button';
+import Col from 'antd/es/col';
+import Layout from 'antd/es/layout';
+import notification from 'antd/es/notification';
+import Row from 'antd/es/row';
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { UsersTable } from 'components/UsersTable';
