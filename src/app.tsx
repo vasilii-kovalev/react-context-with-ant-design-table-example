@@ -17,7 +17,7 @@ const queryConfig: ReactQueryConfig = {
 const App = () => {
   return (
     <ReactQueryConfigProvider config={queryConfig}>
-      <Router>
+      <Router basename="/react-context-with-ant-design-table-example">
         <React.Suspense fallback={null}>
           <Switch>
             <UsersTableProvider>
