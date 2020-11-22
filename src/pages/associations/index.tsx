@@ -3,20 +3,43 @@ import Col from 'antd/es/col';
 import Form from 'antd/es/form';
 import Layout from 'antd/es/layout';
 import notification from 'antd/es/notification';
-import Row from 'antd/es/row';
+import Row, { RowProps } from 'antd/es/row';
 import Space from 'antd/es/space';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { AssociationsTable, Association } from 'components/AssociationsTable';
 
-const AssociationsPage: React.FC = () => {
-  const [form] = Form.useForm();
-  const [associations, setAssociations] = React.useState<Association[] | null>(
-    null
-  );
+type Associations = Association[] | null;
 
-  const handleSubmit = () => {
-    const associations: Association[] = form.getFieldsValue().associations;
+interface AssociationsProps {
+  associations: Associations;
+}
+
+interface AssociationsFormValues {
+  associations: Association[];
+}
+
+const AssociationsBlock: React.FC<AssociationsProps> = ({ associations }) => {
+  if (!associations) {
+    return null;
+  }
+
+  return (
+    <code style={{ whiteSpace: 'pre-wrap', padding: 8 }}>
+      {JSON.stringify(associations, null, 2)}
+    </code>
+  );
+};
+
+const layoutStyle: React.CSSProperties = { padding: 8 };
+const rowGutter: RowProps['gutter'] = [16, 16];
+
+const AssociationsPage: React.FC = () => {
+  const [form] = Form.useForm<AssociationsFormValues>();
+  const [associations, setAssociations] = React.useState<Associations>(null);
+
+  const handleSubmit = React.useCallback(() => {
+    const { associations } = form.getFieldsValue();
 
     const areAllColorsAssociated = associations
       .map(({ color }) => color)
@@ -30,17 +53,17 @@ const AssociationsPage: React.FC = () => {
     }
 
     setAssociations(associations);
-  };
+  }, [form]);
 
   return (
-    <Layout style={{ padding: 8 }}>
+    <Layout style={layoutStyle}>
       <Layout.Content>
-        <Row gutter={[16, 16]}>
+        <Row gutter={rowGutter}>
           <Col span={24}>
             <AssociationsTable form={form} />
           </Col>
         </Row>
-        <Row gutter={[16, 16]}>
+        <Row gutter={rowGutter}>
           <Col>
             <Space>
               <Button onClick={handleSubmit}>Submit</Button>
@@ -48,12 +71,8 @@ const AssociationsPage: React.FC = () => {
             </Space>
           </Col>
         </Row>
-        <Row gutter={[16, 16]}>
-          {!associations ? null : (
-            <code style={{ whiteSpace: 'pre-wrap', padding: 8 }}>
-              {JSON.stringify(associations, null, 2)}
-            </code>
-          )}
+        <Row gutter={rowGutter}>
+          <AssociationsBlock associations={associations} />
         </Row>
       </Layout.Content>
     </Layout>
@@ -61,5 +80,7 @@ const AssociationsPage: React.FC = () => {
 };
 
 export { AssociationsPage };
+
+export type { Associations, AssociationsProps, AssociationsFormValues };
 
 export default AssociationsPage;

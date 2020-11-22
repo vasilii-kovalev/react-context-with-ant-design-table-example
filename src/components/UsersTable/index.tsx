@@ -2,9 +2,10 @@ import { ColumnType } from 'antd/es/table';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 import { build, fake } from '@jackfranklin/test-data-bot';
-import { Table } from 'components/Table';
-import { tableCells } from 'components/TableCell';
+import { Table } from '../Table';
+import { tableCells } from '../TableCell';
 import { useUsersTable, toggleCheckedKey } from 'context/users-table';
+import { TableCellCheckboxProps } from 'components/TableCell/Checkbox';
 
 interface User {
   id: string;
@@ -22,6 +23,33 @@ const userBuilder = build<User>('User', {
 
 const users = new Array(5).fill(null).map(() => userBuilder());
 
+const withSelectedUser = (Component: React.FC<TableCellCheckboxProps>) => {
+  const MemoizedComponent = React.memo(Component);
+
+  return function UserCell(user: User) {
+    const {
+      state: { checkedKeys },
+      dispatch,
+    } = useUsersTable();
+    const userId = user.id;
+
+    const checked = checkedKeys.includes(userId);
+    const handleCheck = React.useCallback(
+      () => toggleCheckedKey(dispatch, userId),
+      [dispatch, userId]
+    );
+
+    return (
+      <MemoizedComponent
+        {...user}
+        dataIndex={userId}
+        checked={checked}
+        onCheck={handleCheck}
+      />
+    );
+  };
+};
+
 const columns: ColumnType<User>[] = [
   {
     title: 'First name',
@@ -35,22 +63,7 @@ const columns: ColumnType<User>[] = [
   },
   {
     title: 'Selected',
-    render: function UserCell(user: User) {
-      const {
-        state: { checkedKeys },
-        dispatch,
-      } = useUsersTable();
-      const userId = user.id;
-
-      return (
-        <tableCells.checkbox
-          {...user}
-          dataIndex={userId}
-          checked={checkedKeys.includes(userId)}
-          onCheck={() => toggleCheckedKey(dispatch, userId)}
-        />
-      );
-    },
+    render: withSelectedUser(tableCells.checkbox),
   },
 ];
 

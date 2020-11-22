@@ -2,9 +2,10 @@ import { ColumnType } from 'antd/es/table';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 import { build, fake } from '@jackfranklin/test-data-bot';
-import { Table } from 'components/Table';
-import { tableCells } from 'components/TableCell';
+import { Table } from '../Table';
+import { tableCells } from '../TableCell';
 import { useColorsTable, toggleCheckedKey } from 'context/colors-table';
+import { TableCellCheckboxProps } from 'components/TableCell/Checkbox';
 
 interface Color {
   id: string;
@@ -20,6 +21,33 @@ const colorBuilder = build<Color>('Color', {
 
 const colors = new Array(5).fill(null).map(() => colorBuilder());
 
+const withSelectedColor = (Component: React.FC<TableCellCheckboxProps>) => {
+  const MemoizedComponent = React.memo(Component);
+
+  return function ColorCell(color: Color) {
+    const {
+      state: { checkedKeys },
+      dispatch,
+    } = useColorsTable();
+    const colorId = color.id;
+
+    const checked = checkedKeys.includes(colorId);
+    const handleCheck = React.useCallback(
+      () => toggleCheckedKey(dispatch, colorId),
+      [dispatch, colorId]
+    );
+
+    return (
+      <MemoizedComponent
+        {...color}
+        dataIndex={colorId}
+        checked={checked}
+        onCheck={handleCheck}
+      />
+    );
+  };
+};
+
 const columns: ColumnType<Color>[] = [
   {
     title: 'Color HEX',
@@ -33,22 +61,7 @@ const columns: ColumnType<Color>[] = [
   },
   {
     title: 'Selected',
-    render: function ColorCell(color: Color) {
-      const {
-        state: { checkedKeys },
-        dispatch,
-      } = useColorsTable();
-      const colorId = color.id;
-
-      return (
-        <tableCells.checkbox
-          {...color}
-          dataIndex={colorId}
-          checked={checkedKeys.includes(colorId)}
-          onCheck={() => toggleCheckedKey(dispatch, colorId)}
-        />
-      );
-    },
+    render: withSelectedColor(tableCells.checkbox),
   },
 ];
 
