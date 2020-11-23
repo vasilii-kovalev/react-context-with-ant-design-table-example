@@ -4,8 +4,9 @@ import { useQuery } from 'react-query';
 import { build, fake } from '@jackfranklin/test-data-bot';
 import { Table } from '../Table';
 import { tableCells } from '../TableCell';
-import { useUsersTable, toggleCheckedKey } from 'context/users-table';
+import { useUsersTable } from 'context/users-table';
 import { TableCellCheckboxProps } from 'components/TableCell/Checkbox';
+import { toggleCheckedKey } from 'context/table';
 
 interface User {
   id: string;

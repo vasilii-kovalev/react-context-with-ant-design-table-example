@@ -4,8 +4,9 @@ import { useQuery } from 'react-query';
 import { build, fake } from '@jackfranklin/test-data-bot';
 import { Table } from '../Table';
 import { tableCells } from '../TableCell';
-import { useColorsTable, toggleCheckedKey } from 'context/colors-table';
+import { useColorsTable } from 'context/colors-table';
 import { TableCellCheckboxProps } from 'components/TableCell/Checkbox';
+import { toggleCheckedKey } from 'context/table';
 
 interface Color {
   id: string;
